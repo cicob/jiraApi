@@ -98,10 +98,10 @@ class jiraIssue {
 	
 		switch ($this->jira->getJiraType()) {
 			case "1":
-				// Swisscom JIRA Installation - issue.swisscom.ch
+				// Customer JIRA Installation - issue.xxx.ch
 				//
 				// Sample:
-				// {"id":"10001","name":"Dependency","inward":"is prerequisite for","outward":"depends on","self":"https://issue.swisscom.ch/rest/api/2/issueLinkType/10001"}
+				// {"id":"10001","name":"Dependency","inward":"is prerequisite for","outward":"depends on","self":"https://issue.xxx.ch/rest/api/2/issueLinkType/10001"}
 				//
 				$this->jira->LinkIssues( $this->getKey(), $firstOne, "Dependency", "This one can only be done after other linked ticket(s)." );
 				break;
