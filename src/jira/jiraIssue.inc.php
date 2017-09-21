@@ -98,10 +98,10 @@ class jiraIssue {
 	
 		switch ($this->jira->getJiraType()) {
 			case "1":
-				// Swisscom JIRA Installation - issue.swisscom.ch
+				// Customer JIRA Installation - issue.xxx.com
 				//
 				// Sample:
-				// {"id":"10001","name":"Dependency","inward":"is prerequisite for","outward":"depends on","self":"https://issue.swisscom.ch/rest/api/2/issueLinkType/10001"}
+				// {"id":"10001","name":"Dependency","inward":"is prerequisite for","outward":"depends on","self":"https://issue.xxx.com/rest/api/2/issueLinkType/10001"}
 				//
 				$this->jira->LinkIssues( $this->getKey(), $firstOne, "Dependency", "This one can only be done after other linked ticket(s)." );
 				break;
@@ -109,7 +109,7 @@ class jiraIssue {
 				// Default out-of-the-box JIRA isntallation
 				//
 				// Sample
-				// {"id":"10000","name":"Blocks","inward":"is blocked by","outward":"blocks","self":"https://jira.meckecico.com/rest/api/2/issueLinkType/10000"}
+				// {"id":"10000","name":"Blocks","inward":"is blocked by","outward":"blocks","self":"https://jira.hello.com/rest/api/2/issueLinkType/10000"}
 				//
 				$this->jira->LinkIssues( $firstOne, $this->getKey(), "Blocks", "-- This one needs to be done prior to other ticket(s). --" );
 				$this->addComment("This one can only be done after other linked ticket(s).");
