@@ -1,0 +1,17 @@
+<?php
+
+
+
+/////////////////////////////
+// Host and Credentials
+/////////////////////////////
+
+$hostname = "https://issue.swisscom.ch";
+$jiraType= 1;  // Swisscom (1), or Default (2)
+$jiraUser ="taaboch5";
+$jiraPw = "xxxxxxxx";
+
+
+
+
+?>
