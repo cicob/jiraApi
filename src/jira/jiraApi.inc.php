@@ -50,7 +50,7 @@ class jiraApi {
 		$this->result_json = 0;
 		$this->ch = curl_init();
 		$this->component = "";
-		$this->issueType = "Task";
+		$this->issueType = "Task"; // Default
 		$this->projectKey = "";
 		$this->defaultEpic ="";
 		
@@ -58,7 +58,7 @@ class jiraApi {
 		// Required Constants
 		/////////////////////////////
 		
-		$this->baseUrl =        $this->hostname . "/rest/api/2/";
+		$this->baseApiUrl =        $this->hostname . "/rest/api/2/";
 		$this->greenhopperUrl = $this->hostname . "/rest/greenhopper/1.0/";
 		
 	}
@@ -76,6 +76,10 @@ class jiraApi {
 	
 	function addComponent($key, $component){
 		//rest/api/2/issue/{issuekey}
+		
+		if ( !$this->existComponent($component) ) {
+			$this->createComponent($component);
+		}
 		
 		$myArray = array(
 			"fields" => array( 
@@ -130,18 +134,56 @@ class jiraApi {
 	
 	
 	
+	function createComponent($name, $description = "", $leadUserName ="", $assigneeType ="PROJECT_LEAD"){
+	    
+	    $myArray = array(
+	        "name" => $name,
+	        "description" => $description,
+	        "leadUserName" => $leadUserName,
+	        "assigneeType" => $assigneeType,
+	        "isAssigneeTypeValid" => "false",
+	        "project" => $this->projectKey
+	    );
+	    
+	    $this->post("component/", json_encode($myArray));
+	}
+	
+	
+	
+	
+	private function existComponent($name){
+		
+		$componentExists = False;
+		
+		//      /rest/api/2/project/ <KEY> /components
+		$this->httpget("project/". $this->projectKey ."/components");
+		if (strpos($this->result_json, $name) !== false) {
+			$componentExists = True;
+		} 
+		
+		return $componentExists;
+	}
+	
+	
+	
 	
 	
 
-	function createIssue($summary, $description, $assignee, $estimate = "0h", $type = "") {
-		
-		
-		if ( $type != "") {
-			$issueType = $type;
-		} else {
-			// Default
-			$issueType = $this->issueType;
-		}
+	function createIssue($summary, $description, $assignee, $estimate = "0h", $type = "", $parent = "") {
+
+	    // Main-Ticket or Sub-Ticket?
+	    if ( $parent == "") {
+	        // Main Ticket, Default type
+	        $issueType = $this->issueType; 
+	    } else {
+	        // Sub-Ticket, Default is Sub-Task
+	        $issueType = "Sub-task"; 
+	    }
+
+        // Ticket-Type, if not default
+	    if ( $type != "") {
+	            $issueType = $type;
+		} 
 		
 		$myArray = array( 
 					"fields" => array(  
@@ -155,10 +197,13 @@ class jiraApi {
 				) // fields
 		); // myArray
 		
-		if ($this->component != "") {
-			$myArray["fields"]["components"] =  array(array( "name" => $this->component ));
+		if ($parent != "") {
+		    $myArray["fields"]["parent"] =  array( "key" => $parent );
 		}
-		
+
+		if ($this->component != "") {
+		    $myArray["fields"]["components"] =  array(array( "name" => $this->component ));
+		}
 		
 		
 		
@@ -174,39 +219,6 @@ class jiraApi {
 	
 	
 
-	function createSubTask($summary, $description, $assignee, $estimate = "0h", $type = "", $parent) {
-
-		if ( $type != "") {
-			$issueType = $type;
-		} else {
-			// Default
-			$issueType = "Sub-task"; //default
-		}
-	
-			$myArray = array( 
-							"fields" => array( 
-								"project" => array( "key" => $this->projectKey),
-								"parent"  => array( "key" => $parent),
-								"summary" => $summary,
-								"description" => $description,
-								"issuetype" => array("name" => $issueType),
-								"assignee" => array("name" => $assignee),
-								"timetracking" => array( "originalEstimate" => $estimate)
-					) // fields 
-			); // myArray
-				
-	
-		// Execute
-		$this->post("issue/", json_encode($myArray));
-	
-		// Print resulting URL on screen
-		$burl = $this->hostname ."/browse/".$this->resultKey();
-		$this->printStatus($summary.": ", False, True, $burl);
-		
-		return $this->resultKey();
-	}
-	
-	
 	
 	
 	
@@ -240,17 +252,16 @@ class jiraApi {
 		curl_setopt($this->ch, CURLOPT_USERPWD,  $this->jiraUser.":".$this->jiraPw  );
 
 		// Status
-		$this->printStatus("Trying call with: ", False, False, $this->baseUrl.$url);
-		curl_setopt($this->ch, CURLOPT_URL, $this->baseUrl.$url);
+		$this->printStatus("Trying call with: ", False, False, $this->baseApiUrl.$url);
+		curl_setopt($this->ch, CURLOPT_URL, $this->baseApiUrl.$url);
 		$this->result_json=curl_exec($this->ch);
 		if ($this->result_json === false) {
 			$this->printStatus('Curl error: ' . curl_error($ch), True, True);
 		}
 	}
 	
-	
-	private function httpget($url) {
-		return $this->jiraRest($url, "", "GET");
+	private function httpget($url, $myBaseUrl ="") {
+	    return $this->jiraRest($url, "", "GET", $myBaseUrl);
 	}
 	
 	private function post($url, $json) {
@@ -267,7 +278,7 @@ class jiraApi {
 		if ($myBaseUrl != "") {
 			$myUrl = $myBaseUrl.$url;
 		} else {
-			$myUrl = $this->baseUrl.$url;  // JIRA API URL
+			$myUrl = $this->baseApiUrl.$url;  // JIRA API URL
 		}
 		
 		curl_setopt($this->ch, CURLOPT_SSL_VERIFYPEER, false);
@@ -304,15 +315,25 @@ class jiraApi {
 		
 		// Error-check #2
 		if (strpos($this->result_json, 'errorMessages') !== false) {
-			$this->printStatus(" ", False, True);
-			$res = json_decode($this->result_json); //Returning a Class
-			foreach($res->errors as $val) {
-				$this->printStatus("**Error** : [".$val."]", False, True);
-			}
-			$this->printStatus(" ", False, True);
+		    $this->printStatus(" ", False, True); // Empty line
+		    $res = json_decode($this->result_json); //Returning a Class
+		    foreach($res->errorMessages as $val) {
+		        $this->printStatus("**errorMessage** : [".$val."]", False, True);
+		    }
+		    $this->printStatus(" ", False, True); // Empty line
 		}
 		
-		$this->printStatus("Return: [".$this->result_json."]", True);
+		// Error-check #3
+		if (strpos($this->result_json, 'errors') !== false) {
+		    $this->printStatus(" ", False, True); // Empty line
+		    $res = json_decode($this->result_json); //Returning a Class
+		    foreach($res->errors as $val) {
+		        $this->printStatus("**error** : [".$val."]", False, True);
+		    }
+		    $this->printStatus(" ", False, True); // Empty line
+		}
+		
+		$this->printStatus("Debug Return: [".$this->result_json."]", True);
 		
 		return $this->result_json;
 	}
@@ -352,23 +373,6 @@ class jiraApi {
 	}
 	
 	
-	
-	//TODO: Not in use yet. Not ready.
-	function newComponent($name, $description, $leadUserName, $assigneeType ="PROJECT_LEAD"){
-	
-		$myArray = array(
-				"name" => $name,
-				"description" => $description,
-				"leadUserName" => $leadUserName,
-				"assigneeType" => $assigneeType,
-				"isAssigneeTypeValid" => "false",
-				"project" => $this->projectKey
-		);
-	
-		$this->post("component/", json_encode($myArray));
-	}
-	
-
 
 
 	
