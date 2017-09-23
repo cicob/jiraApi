@@ -29,8 +29,8 @@ print("Hej! V1.6<br>\n");
 // Jira Project Parameters
 
 
-$jiraProjectKey = "HLTTEST";
-$factoryEpic = "HLTTEST-9";
+$jiraProjectKey = "CAAP";
+$factoryEpic = "CAAP-9";
 
 
 
