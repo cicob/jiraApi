@@ -36,7 +36,7 @@ print("JIRA System-type: <b>".$jiraType."</b>\n");
     <tr>
 
 
-      <td>  <a href="go-ahead.php">GO Factory</a> <br>  generate some tickets    
+      <td>  <a href="go-ahead.php">GO Ahead</a> <br>  generate some tickets    
       </td>
       
       
