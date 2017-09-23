@@ -141,7 +141,7 @@ See Sample-output below and the implementation in the wrapper-class for further 
 
 # Design 
 
-For a brief overview, please see these pictures: [Overview in Powerpoint](jira-api-presentation.pdf)
+For a brief overview, please see these pictures: [Overview](jira-api-presentation.pdf)
 
 
 
@@ -267,8 +267,13 @@ curl -D- -X GET -H "Content-Type: application/json"  https://issue.xyz.com/brows
 <http://stackoverflow.com/questions/6739871/how-to-create-an-array-for-json-using-php>
 
 Simple: Just create a (nested) PHP array and call json_encode on it.
-Numeric arrays translate into JSON lists ([]), 
-associative arrays and PHP objects translate into objects ({}). Example:
+
+- Numeric arrays translate into JSON **lists** = [ ], 
+
+- associative arrays and PHP objects translate into **objects** = { }. 
+
+
+Example:
 
 ```
 $a = array(
