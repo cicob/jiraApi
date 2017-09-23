@@ -123,8 +123,11 @@ It is recommended to have at least 2GB of RAM for PHP. Ansible Conde-snippet
 * $jiraPw  - password
 
 * $jiraType - Set to 1 or 2.  
+ 
  1 = Custom Installation
+ 
  2 = Plain-vanilla Jira v7.3.0  
+
 The **Custom-Installation** is different from the out-of-the-box **JIRA v7.3.0**, in that they use different issueLink-types. 
 See Sample-output below and the implementation in the wrapper-class for further details.
 
