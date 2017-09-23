@@ -1,0 +1,56 @@
+<?php
+
+
+////////////////////////////////////////////////////
+// We're running form the command-line here. No HTTP-Server around.
+
+$_SERVER['HTTP_HOST'] = "cron";
+
+
+
+
+
+
+////////////////////////////////////////////////////
+////////////////////////////////////////////////////
+////////////////////////////////////////////////////
+// Enabling the inclusion of Class-files also when running from the command-line
+
+
+// Enter your path to the Web-Root here (i.e. the 'src'-folder)
+
+
+
+// Cyon CRON
+//$_SERVER['DOCUMENT_ROOT'] = "/home/xxxxx/public_html";
+// Laptop PC
+//$_SERVER['DOCUMENT_ROOT'] = "D:/eclipse-php/swisscom/src";
+
+// Laptop Mac
+$_SERVER['DOCUMENT_ROOT'] = "/app/vagrant-kitchen/shared/cicob-jra-api/tools/jira-api-php/public";
+
+
+
+
+////////////////////////////////////////////////////
+////////////////////////////////////////////////////
+////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
+
+
+
+////////////////////////////////////////////////////
+// Starting the desired script
+
+print("-- Hej! Now running your script: [". $argv[1]  ."] \n");
+
+include $argv[1] ;
+
+?>

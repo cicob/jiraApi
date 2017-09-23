@@ -92,8 +92,12 @@ class jiraIssue {
 	
 	}
 
-
-
+		
+	
+	
+	/**
+	 * Issue depends on firstOne
+	 */
 	function dependsOn($firstOne) {
 	
 		switch ($this->jira->getJiraType()) {
@@ -104,14 +108,15 @@ class jiraIssue {
 				// {"id":"10001","name":"Dependency","inward":"is prerequisite for","outward":"depends on","self":"https://issue.xxx.com/rest/api/2/issueLinkType/10001"}
 				//
 				$this->jira->LinkIssues( $this->getKey(), $firstOne, "Dependency", "This one can only be done after other linked ticket(s)." );
+				$this->jira->addComment( $firstOne, "This one needs to be done prior to other linked ticket(s).");
 				break;
 			case "2":
 				// Default out-of-the-box JIRA isntallation
 				//
 				// Sample
-				// {"id":"10000","name":"Blocks","inward":"is blocked by","outward":"blocks","self":"https://jira.hello.com/rest/api/2/issueLinkType/10000"}
+				// {"id":"10000","name":"Blocks","inward":"is blocked by","outward":"blocks","self":"https://jira.mecke.com/rest/api/2/issueLinkType/10000"}
 				//
-				$this->jira->LinkIssues( $firstOne, $this->getKey(), "Blocks", "-- This one needs to be done prior to other ticket(s). --" );
+				$this->jira->LinkIssues( $firstOne, $this->getKey(), "Blocks", "This one needs to be done prior to other linked ticket(s)." );
 				$this->addComment("This one can only be done after other linked ticket(s).");
 				break;
 			default:
@@ -136,7 +141,7 @@ class jiraIssue {
 
 	/**
 	 * Wrapper for API addComponent()
-	 * NOTE: The component must exist already
+	 * The component is created if it does not exist already.
 	 */
 	function addComponent($component){
 		// Current implementation: The component must exist already
@@ -147,7 +152,7 @@ class jiraIssue {
 
 	/**
 	 * Wrapper for API addFixVersion()
-	 * NOTE: The fixVersion has to exist already
+	 * TODO: The fixVersion has to exist already
 	 */
 	function addFixVersion($fixVersion){
 		// Current implementation: The fixVersion has to exist already
@@ -158,7 +163,7 @@ class jiraIssue {
 
 	/**
 	 * Wrapper for API addLabel()
-	 * NOTE: The label has to exist already
+	 * TODO: The label has to exist already
 	 */
 	function addLabel($label){
 		// Current implementation: The label has to exist already

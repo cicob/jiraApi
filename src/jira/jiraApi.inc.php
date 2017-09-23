@@ -33,10 +33,10 @@ OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISE
 /**
  * Jira API Class - for creating Issues
  * @package    Jira API
- * @author     Christer Boberg
+ * @author     Christer Boberg  
  */
 class jiraApi {
-	
+
 	function __construct($hostname, $jiraUser, $jiraPw, $jiraType) {
 		global $cmdline;
 		$this->cmdline = $cmdline;
@@ -62,18 +62,28 @@ class jiraApi {
 		$this->greenhopperUrl = $this->hostname . "/rest/greenhopper/1.0/";
 		
 	}
+
+
 	
 	
-	
+	/**
+	 * Add Comment
+	 */
 	function addComment($key, $comment){
 		//rest/api/2/issue/{issuekey}/comment
-		
+	
 		$myArray = array(  "body" => $comment);
 		$result = $this->post("issue/".$key."/comment", json_encode($myArray));
-		
+	
 	}
 	
+
 	
+	
+	
+	/**
+	 * Add Component - creates one if it does not exist.
+	 */
 	function addComponent($key, $component){
 		//rest/api/2/issue/{issuekey}
 		
@@ -82,32 +92,51 @@ class jiraApi {
 		}
 		
 		$myArray = array(
-			"fields" => array(
-				"components" => array(array( "name" => $component ))
+			"fields" => array( 
+					"components" => array(array( "name" => $component ))  
 			) // fields
 		); // myArray
-		
+				
 		$result = $this->put("issue/".$key, json_encode($myArray));
+	
+	}
+	
+	function createComponent($name, $description = "", $leadUserName ="", $assigneeType ="PROJECT_LEAD"){
+	    
+	    $myArray = array(
+	        "name" => $name,
+	        "description" => $description,
+	        "leadUserName" => $leadUserName,
+	        "assigneeType" => $assigneeType,
+	        "isAssigneeTypeValid" => "false",
+	        "project" => $this->projectKey
+	    );
+	    
+	    $this->post("component/", json_encode($myArray));
+	}
+	
+	private function existComponent($name){
+			
+		$componentExists = False;
 		
+		//      /rest/api/2/project/ <KEY> /components
+		$this->httpget("project/". $this->projectKey ."/components");
+		$res = json_decode($this->result_json); //Returning a Class
+		foreach($res as  $object) {
+			if ($object->name == $name) {
+				$componentExists = True;
+			}
+		}
+		
+		return $componentExists;
 	}
 	
 	
 	
-	function addFixVersion($key, $fixVersion){
-		//rest/api/2/issue/{issuekey}
-		
-		$myArray = array(
-			"fields" => array(
-				"fixVersions" => array(array( "name" => $fixVersion ))
-			) // fields
-		); // myArray
-		
-		$result = $this->put("issue/".$key, json_encode($myArray));
-		
-	}
 	
-	
-	
+	/**
+	 * Add Label
+	 */
 	function addLabel($key, $label){
 		//rest/api/2/issue/{issuekey}
 		
@@ -125,104 +154,124 @@ class jiraApi {
 	
 	
 	
-	/*-
-	 * Close the API-channel. Terminate the communication.
+	
+	
+	
+	/**
+	 * Add FixVersion - creates one if it does not exist.
 	 */
-	function close() {
-		curl_close($this->ch);
-	}
-	
-	
-	
-	function createComponent($name, $description = "", $leadUserName ="", $assigneeType ="PROJECT_LEAD"){
+	function addFixVersion($key, $fixVersion){
+		//rest/api/2/issue/{issuekey}
 		
-		$myArray = array(
-			"name" => $name,
-			"description" => $description,
-			"leadUserName" => $leadUserName,
-			"assigneeType" => $assigneeType,
-			"isAssigneeTypeValid" => "false",
-			"project" => $this->projectKey
-		);
-		
-		$this->post("component/", json_encode($myArray));
-	}
-	
-	
-	
-	
-	private function existComponent($name){
-		
-		$componentExists = False;
-		
-		//      /rest/api/2/project/ <KEY> /components
-		$this->httpget("project/". $this->projectKey ."/components");
-		$res = json_decode($this->result_json); //Returning a Class
-		foreach($res as  $object) {
-			//$this->printStatus("Component Name : [".$object->name."]", False, True);
-			if ($object->name == $name) {
-				$componentExists = True;
-			}
-		}
-		
-		return $componentExists;
-	}
-	
-	
-	
-	
-	
-	
-	function createIssue($summary, $description, $assignee, $estimate = "0h", $type = "", $parent = "") {
-		
-		// Main-Ticket or Sub-Ticket?
-		if ( $parent == "") {
-			// Main Ticket, Default type
-			$issueType = $this->issueType;
-		} else {
-			// Sub-Ticket, Default is Sub-Task
-			$issueType = "Sub-task";
-		}
-		
-		// Ticket-Type, if not default
-		if ( $type != "") {
-			$issueType = $type;
+		if ( !$this->existFixVersion($fixVersion) ) {
+			$this->createFixVersion($fixVersion);
 		}
 		
 		$myArray = array(
 			"fields" => array(
-				"project" => array( "key" => $this->projectKey),
-				"summary" => $summary,
-				"description" => $description,
-				"issuetype" => array("name" => $issueType),
-				"assignee" => array("name" => $assignee),
-				"timetracking" => array( "originalEstimate" => $estimate)  //,
-				//"components" => array(array( "name" => $this->component ))
+				"fixVersions" => array(array( "name" => $fixVersion ))
 			) // fields
-			); // myArray
-			
-			if ($parent != "") {
-				$myArray["fields"]["parent"] =  array( "key" => $parent );
+		); // myArray
+		
+		$result = $this->put("issue/".$key, json_encode($myArray));
+	}
+	
+	function createFixVersion($name, $description = ""){
+
+		$myArray = array(
+			"name" => $name,
+			"description" => $description,
+			"archived" => "false",
+			"released" => "true",
+			"project" => $this->projectKey
+		);
+		
+		// POST /rest/api/2/version
+		$this->post("version/", json_encode($myArray));
+	}
+	
+	private function existFixVersion($name){
+	
+		$fixVersionExists = False;
+		
+		//      /rest/api/2/project/ <KEY> /versions
+		$this->httpget("project/". $this->projectKey ."/versions");
+		$res = json_decode($this->result_json); //Returning a Class
+		
+		foreach($res as  $object) {
+			if ($object->name == $name) {
+				$fixVersionExists = True;
 			}
-			
-			if ($this->component != "") {
-				$myArray["fields"]["components"] =  array(array( "name" => $this->component ));
-			}
-			
-			
-			
-			// Execute
-			$this->post("issue/", json_encode($myArray));
-			
-			// Print resulting URL on screen
-			$burl = $this->hostname ."/browse/".$this->resultKey();
-			$this->printStatus($summary.": ", False, True, $burl);
-			
-			return $this->resultKey();
+		}
+		
+		return $fixVersionExists;
 	}
 	
 	
 	
+	
+	
+	
+/**
+ * Create Issue or Sub-Issue
+ * @param string $summary
+ * @param string $description
+ * @param string $assignee
+ * @param string $estimate
+ * @param string $type
+ * @param string $parent
+ * @return string Generated Key
+ */
+	function createIssue($summary, $description, $assignee, $estimate = "0h", $type = "", $parent = "") {
+
+		// Main-Ticket or Sub-Ticket?
+		if ( $parent == "") {
+			// Main Ticket, Default type
+			$issueType = $this->issueType; 
+		} else {
+			// Sub-Ticket, Default is Sub-Task
+			$issueType = "Sub-task"; 
+		}
+
+		// Ticket-Type, if not default
+		if ( $type != "") {
+			$issueType = $type;
+		} 
+		
+		$myArray = array( 
+					"fields" => array(  
+						"project" => array( "key" => $this->projectKey),
+						"summary" => $summary,
+						"description" => $description,
+						"issuetype" => array("name" => $issueType),
+						"assignee" => array("name" => $assignee),
+						"timetracking" => array( "originalEstimate" => $estimate)  //,
+						//"components" => array(array( "name" => $this->component ))
+				) // fields
+		); // myArray
+		
+		if ($parent != "") {
+			$myArray["fields"]["parent"] =  array( "key" => $parent );
+		}
+
+		if ($this->component != "") {
+			$myArray["fields"]["components"] =  array(array( "name" => $this->component ));
+		}
+		
+		
+		
+		// Execute
+		$this->post("issue/", json_encode($myArray));	
+		
+		// Print resulting URL on screen
+		$burl = $this->hostname ."/browse/".$this->resultKey();
+		$this->printStatus($summary.": ", False, True, $burl);
+
+		return $this->resultKey();
+	}
+	
+	
+
 	
 	
 	
@@ -230,13 +279,13 @@ class jiraApi {
 		// $type = "Duplicate" or "Blocks" or "Dependency", $comment = "Duplicate issues" etc
 		// The comment goes into the Inward Issue
 		
-		$myArray = array(
+		$myArray = array( 
 			"type" => array ("name" => $type),
 			"inwardIssue" => array( "key" => $inward),
 			"outwardIssue" => array( "key" => $outward),
-			"comment" => array( "body" => $comment)
+			"comment" => array( "body" => $comment) 
 		);
-		
+			
 		$this->post("issueLink/", json_encode($myArray));
 		
 	}
@@ -247,14 +296,14 @@ class jiraApi {
 	
 	
 	
-	// DEPRECATED
+	// DEPRECATED 
 	private function call($url) {
 		// This implies a HTTP-GET, right?
 		curl_setopt($this->ch, CURLOPT_SSL_VERIFYPEER, false);
 		curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($this->ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
 		curl_setopt($this->ch, CURLOPT_USERPWD,  $this->jiraUser.":".$this->jiraPw  );
-		
+
 		// Status
 		$this->printStatus("Trying call with: ", False, False, $this->baseApiUrl.$url);
 		curl_setopt($this->ch, CURLOPT_URL, $this->baseApiUrl.$url);
@@ -265,7 +314,7 @@ class jiraApi {
 	}
 	
 	private function httpget($url, $myBaseUrl ="") {
-		return $this->jiraRest($url, "", "GET", $myBaseUrl);
+	    return $this->jiraRest($url, "", "GET", $myBaseUrl);
 	}
 	
 	private function post($url, $json) {
@@ -278,7 +327,7 @@ class jiraApi {
 	
 	
 	private function jiraRest($url, $json = "", $method, $myBaseUrl = "") {
-		
+	
 		if ($myBaseUrl != "") {
 			$myUrl = $myBaseUrl.$url;
 		} else {
@@ -289,15 +338,15 @@ class jiraApi {
 		curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($this->ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
 		curl_setopt($this->ch, CURLOPT_USERPWD,  $this->jiraUser.":".$this->jiraPw  );
-		
+
 		curl_setopt($this->ch, CURLOPT_CUSTOMREQUEST, $method);
 		curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, true);
 		if ($json != "") {
 			curl_setopt($this->ch, CURLOPT_POSTFIELDS, $json);
 			curl_setopt($this->ch, CURLOPT_HTTPHEADER, array(
-				'Content-Type: application/json',
-				'Content-Length: ' . strlen($json))
-				);
+					'Content-Type: application/json',
+					'Content-Length: ' . strlen($json))
+					);
 		}
 		
 		// Status
@@ -308,10 +357,10 @@ class jiraApi {
 		
 		
 		curl_setopt($this->ch, CURLOPT_URL, $myUrl);
-		
+	
 		// Execution - CURL
 		$this->result_json=curl_exec($this->ch);
-		
+
 		// Error-check #1
 		if ($this->result_json === false) {
 			$this->printStatus('Curl ".$method." error: ' . curl_error($this->ch), False, True);
@@ -322,7 +371,7 @@ class jiraApi {
 			$this->printStatus(" ", False, True); // Empty line
 			$res = json_decode($this->result_json); //Returning a Class
 			foreach($res->errorMessages as  $key => $value) {
-				$this->printStatus("**ErrorMessage** : [".$key."] [".$value."]", False, True);
+			$this->printStatus("**ErrorMessage** : [".$key."] [".$value."]", False, True);
 			}
 			$this->printStatus(" ", False, True); // Empty line
 		}
@@ -331,9 +380,6 @@ class jiraApi {
 		if (strpos($this->result_json, 'errors') !== false) {
 			$this->printStatus(" ", False, True); // Empty line
 			$res = json_decode($this->result_json); //Returning a Class
-			
-			var_dump($res);
-			
 			foreach($res->errors as $key => $value) {
 				$this->printStatus("**Error**: [".$key."] [".$value."]", False, True);
 			}
@@ -348,36 +394,36 @@ class jiraApi {
 	
 	
 	
-	
+
 	function resultJson() {
 		return $this->result_json;
 	}
-	
-	
+
+
 	function resultClass() {
 		return json_decode($this->result_json); //Returning a Class
 	}
-	
-	
+
+
 	function result() {
 		return json_decode($this->result_json, true); // Returnign an Array
 	}
-	
-	
+
+
 	function resultKey() {
 		$res = json_decode($this->result_json); //Returning a Class
 		return $res->key; // Returning the issue-key
 	}
-	
-	
+
+
 	function resultSummary() {
 		$res = json_decode($this->result_json); //Returning a Class
 		return $res->fields->summary;
 	}
 	
 	
-	
-	
+
+
 	
 	function printStatus ($message, $border = False, $force = False, $url = "") {
 		
@@ -385,10 +431,10 @@ class jiraApi {
 			if ($border) {
 				$this->printLine("--------------");
 			}
-			
+
 			// Print text
 			$this->printLine($message);
-			
+
 			// Add URL to output
 			if ($url != "") {
 				
@@ -411,13 +457,13 @@ class jiraApi {
 		} // end debug/force
 	} // end function
 	
-	
-	
-	
+
+
+
 	private function printLine ($message) {
-		
+	
 		print($message);
-		
+
 		if ($this->cmdline) {
 			// Command-line
 			print(PHP_EOL);
@@ -431,15 +477,15 @@ class jiraApi {
 	
 	
 	
-	
-	
+
+
 	//TODO: Not in use yet. Not ready.
 	function query($issue) {
 		$this->call("issue/". $issue);
 	}
 	
-	
-	
+
+
 	//TODO: Not in use yet. Not ready.
 	function queryLinkIssue($issue) {
 		$this->call("issueLink/". $issue);
@@ -447,23 +493,23 @@ class jiraApi {
 	
 	
 	
+
+
 	
-	
-	
-	
+
 	/////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////
 	// Getters
 	
 	
-	
+
 	function getDebug() {
 		return $this->debug;
 	}
 	
 	
-	
+
 	/**
 	 * Get type of JIRA-Installation
 	 * (Customer or default out-of-the-box)
@@ -476,8 +522,8 @@ class jiraApi {
 	
 	
 	
-	
-	
+
+
 	
 	/////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////
@@ -487,31 +533,31 @@ class jiraApi {
 	
 	
 	
-	
-	
+
+
 	function setComponent($component) {
 		// Set component to use when creating issues
 		$this->component = $component;
-		
-		
+	
+	
 		////////////////////////////////
 		// TODO: Add component if it doesn't exist yet.
 		//    GET /rest/api/2/component/{id}
-		
+	
 		//		$allComponents = $this->httpget("project/".$this->projectKey."/components");
-		
+	
 		//		var_dump(  json_decode(  $allComponents  )   );
-		
+	
 	}
 	
 	
 	
-	
+
 	function setDebug($flag) {
 		$this->debug = $flag;
 	}
 	
-	
+
 	function setDefaultEpic($key) {
 		$this->defaultEpic = $key;
 	}
@@ -526,22 +572,22 @@ class jiraApi {
 	
 	
 	
-	
-	
+
+
 	function setDueDate($key, $dateString){
-		//rest/api/2/issue/{issuekey}
+		//rest/api/2/issue/{issuekey} 
 		
 		$myArray = array(
-			"fields" => array(
-				"duedate" => $dateString
-			) // fields
+				"fields" => array(
+						"duedate" => $dateString 
+				) // fields
 		); // myArray
 		
 		$result = $this->put("issue/".$key , json_encode($myArray));
 	}
 	
 	
-	
+
 	function setEpicToIssue($issue, $epicIssue) {
 		$url = "epics/".$epicIssue."/add";
 		$json = '{"ignoreEpics":true,"issueKeys":["'.$issue.'"]}';
@@ -558,8 +604,8 @@ class jiraApi {
 	function setIssueType($issueType) {
 		$this->issueType = $issueType;
 	}
-	
-	
+
+
 	/**
 	 * Set Project Key. Used in all API-calls
 	 */
@@ -571,15 +617,15 @@ class jiraApi {
 	
 	
 	
-	
-	
+
+
 	function setReporter($key, $reporter){
 		//rest/api/2/issue/{issuekey}/comment
-		
+
 		$myArray = array( "fields" =>
-			array( "reporter" =>
-				array( "name" => $reporter)
-			) // reporter
+				array( "reporter" =>
+						array( "name" => $reporter)		
+					) // reporter
 		); // fields
 		
 		$result = $this->put("issue/".$key , json_encode($myArray));
@@ -588,9 +634,23 @@ class jiraApi {
 	}
 	
 	
+
 	
 	
 	
+	
+	/*-
+	 * Close the API-channel. Terminate the communication.
+	 */
+	function close() {
+		curl_close($this->ch);
+	}
+	
+	
+	
+	
+
+
 } // end class
 
 ?>
