@@ -3,7 +3,9 @@
 
 Author: Christer Boberg
 
-With this utility we can generate JIRA-Tickets form a script. It was decided to implement this in PHP, but it can of course be done with any language. 
+This utility offers to generate JIRA-Tickets form a script. With these classes, tedious repetitive JIRA-ticket-generation turns into an array of **simple one-liners**.
+
+It was decided to implement this in PHP, but it can of course be done with any language. 
  
 You execute your script in one of two ways
 - A) from the **Command-Line** 
@@ -144,7 +146,7 @@ For a brief overview, please see these pictures: [Overview in Powerpoint](jira-a
 
 
 - The main PHP-script (such as 'go-patch.php') includes the wrapper-class **'jiraIssue.inc.php'** 
-  as well as the base-class **'jiraApi.inc.php'**. With these classes, ticket-generation turns into an array of simple one-liners.
+  as well as the base-class **'jiraApi.inc.php'**. 
 - Your *JIRA-credentials* are kept locally in 'jiraconfig.inc.php' and are **not** checked into Git. (See [.gitignore](src/jira/.gitignore).)
 
 ```
