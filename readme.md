@@ -69,6 +69,7 @@ They are kept in Git to serve as examples for future similar one-off scripts.
 ## A) Set up your Command-line PHP-Stack
 
 1. Install [PHP](http://php.net/) (i.e. 'php.exe' on a Windows-Machine)
+1. Clone this project
 1. Copy the file 'public/jira/bootstrap.php.template' to 'public/jira/bootstrap.php'
 1. Edit the file **'public/jira/bootstrap.php'** so that the path to 'src' matches your setup
 1. Copy the file 'src/jira/jiraconfig.inc.php.template' to 'src/jira/jiraconfig.inc.php'
@@ -91,6 +92,7 @@ extension=php_curl.dll
 ## B) Set up your Web-Server PHP-Stack
 
 1. Install VirtualBox
+1. Clone this project
 1. Bring up Nginx and PHP, preferably with Ansible
 1. Align the folder-structure from this Git-package to your web-root. Note the file **'stub.inc.php'** that will point to the include-files in 'src'
 1. Copy the file 'src/jira/jiraconfig.inc.php.template' to 'src/jira/jiraconfig.inc.php'
