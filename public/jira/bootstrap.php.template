@@ -27,7 +27,7 @@ $_SERVER['HTTP_HOST'] = "cron";
 //$_SERVER['DOCUMENT_ROOT'] = "D:/eclipse-php/swisscom/src";
 
 // Laptop Mac
-$_SERVER['DOCUMENT_ROOT'] = "/app/vagrant-kitchen/shared/cicob-jra-api/tools/jira-api-php/public";
+$_SERVER['DOCUMENT_ROOT'] = "/app/vagrant-kitchen/shared/cicob-jira-api/tools/jira-api-php/public";
 
 
 

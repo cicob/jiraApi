@@ -7,8 +7,8 @@
 /////////////////////////////
 
 $hostname = "https://jira.mycompany.com";
-$jiraType= 1;  // Custom-Installation (1), or Default (2)
-$jiraUser ="taaboch5";
+$jiraType= 2;  // Custom-Installation (1), or Default (2)
+$jiraUser ="cicob";
 $jiraPw = "xxxxxxxx";
 
 
