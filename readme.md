@@ -3,7 +3,10 @@
 
 Author: Christer Boberg
 
-This utility offers to generate JIRA-Tickets form a script. With these classes, tedious repetitive JIRA-ticket-generation turns into an array of **simple one-liners**.
+With these classes, tedious repetitive JIRA-ticket-generation turns into an array of **simple one-liners**.
+
+This utility offers to generate JIRA-Tickets form a script. 
+
 
 It was decided to implement this in PHP, but it can of course be done with any language. 
  
