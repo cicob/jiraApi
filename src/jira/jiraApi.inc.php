@@ -245,8 +245,7 @@ class jiraApi {
 						"description" => $description,
 						"issuetype" => array("name" => $issueType),
 						"assignee" => array("name" => $assignee),
-						"timetracking" => array( "originalEstimate" => $estimate)  //,
-						//"components" => array(array( "name" => $this->component ))
+						"timetracking" => array( "originalEstimate" => $estimate)  
 				) // fields
 		); // myArray
 		
@@ -255,6 +254,12 @@ class jiraApi {
 		}
 
 		if ($this->component != "") {
+			
+			//Does this component exist?
+			if ( !$this->existComponent($this->component) ) {
+				$this->createComponent($this->component);
+			}
+			
 			$myArray["fields"]["components"] =  array(array( "name" => $this->component ));
 		}
 		
