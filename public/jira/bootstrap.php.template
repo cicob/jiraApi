@@ -24,7 +24,7 @@ $_SERVER['HTTP_HOST'] = "cron";
 // Cyon CRON
 //$_SERVER['DOCUMENT_ROOT'] = "/home/xxxxx/public_html";
 // Laptop PC
-//$_SERVER['DOCUMENT_ROOT'] = "D:/eclipse-php/swisscom/src";
+//$_SERVER['DOCUMENT_ROOT'] = "D:/eclipse-php/swisscom/public";
 
 // Laptop Mac
 $_SERVER['DOCUMENT_ROOT'] = "/app/vagrant-kitchen/shared/cicob-jira-api/tools/jira-api-php/public";
