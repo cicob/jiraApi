@@ -207,6 +207,58 @@ class jiraApi {
 		return $fixVersionExists;
 	}
 	
+
+	
+	
+	
+	
+	/**
+	 * Create User
+	 * @param string $username
+	 * @param string $password
+	 * @param string $email
+	 * @param string $displayname
+	 * @param string $notification (default: false)
+	 */
+	function createUser($username, $password, $email, $displayname, $notification  = "false") {
+	    
+	    $myArray = array(
+	        "name" => $username,
+	        "password" => $password,
+	        "emailAddress" => $email,
+	        "displayName" => $displayname,
+	        "notification" => $notification
+	    ); 
+	    
+	    // Create User
+	    $this->post("user/", json_encode($myArray));
+	    
+	    return TRUE;
+	}
+	
+	
+
+	/**
+	 * Add User to group
+	 * @param string $username
+	 * @param string $groupname
+	 */
+	function addUserToGroup($username, $groupname) {
+	    
+	    $myArray = array(
+	        "name" => $username
+	    ); 
+	    
+	    // Add to group
+	    $this->post("group/user?groupname=".$groupname , json_encode($myArray));
+	    
+	    return TRUE;
+	}
+	
+	
+	
+	
+	
 	
 	
 	
