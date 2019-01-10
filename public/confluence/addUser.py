@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# This Python file uses the following encoding: utf-8
 #
 # File Name: AddUser.py
 # Purpose: Sets up a user login and gives the user a personal space
@@ -80,8 +81,9 @@ token = s.confluence1.login(cfg.confluenceUser, cfg.confluencePw)
 
 
 
-createCCuser("boc3", "abcdef1234", "Christer ConfTest Boberg")
-createCCuser('boc4', 'abcdef1234', 'Christer ConfTest Boberg')
+createCCuser("boc7", "abcdef1234", "ChristerTest Hönspelle Boberg")
+createCCuser('boc8', 'abcdef1234', 'ChristerTest René Boberg')
+createCCuser('boc9', 'abcdef1234', 'ChristerTest Jürgen Boberg')
 
 
 print(" ")
