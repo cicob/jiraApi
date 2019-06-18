@@ -228,10 +228,29 @@ class jiraApi {
 	        "emailAddress" => $email,
 	        "displayName" => $displayname,
 	        "notification" => $notification
-	    ); 
+	    );
 	    
 	    // Create User
 	    $this->post("user/", json_encode($myArray));
+	    
+	    return TRUE;
+	}
+	
+	
+	
+	/**
+	 * Rename User
+	 * @param string $oldUsername
+	 * @param string $newUsername
+	 */
+	function renameUser($oldUsername, $newUsername) {
+	    
+	    $myArray = array(
+	        "name" => $newUsername
+	    );
+	    
+	    // Rename User
+	    $this->put("user/?username=".$oldUsername , json_encode($myArray));
 	    
 	    return TRUE;
 	}
