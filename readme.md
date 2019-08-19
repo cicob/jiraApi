@@ -3,6 +3,9 @@
 
 Author: Christer Boberg
 
+Ref: <https://github.com/cicob/jiraApi>
+
+
 With these classes, tedious repetitive JIRA-ticket-generation turns into an array of **simple one-liners**.
 
 This utility offers to generate JIRA-Tickets form a script. 
@@ -14,7 +17,7 @@ You execute your script in one of two ways
 - A) from the **Command-Line** 
 - B) from a **Browser** 
 
-The latter is only feasable provided you have a web-server running PHP tied to your local file-system (i.e. a [Vagrant](https://www.vagrantup.com/)-box, [WAMP](https://sourceforge.net/projects/wampserver/) or equivalent).
+The latter is only feasible provided you have a web-server running PHP tied to your local file-system (i.e. a [Vagrant](https://www.vagrantup.com/)-box, [WAMP](https://sourceforge.net/projects/wampserver/) or equivalent).
 
 
 
@@ -71,11 +74,11 @@ They are kept in Git to serve as examples for future similar one-off scripts.
 1. Install [PHP](http://php.net/) (i.e. 'php.exe' on a Windows-Machine)
 1. Clone this project
 1. Copy the file 'public/jira/bootstrap.php.template' to 'public/jira/bootstrap.php'
-1. Edit the file **'public/jira/bootstrap.php'** so that the path to 'src' matches your setup
-1. Copy the file 'src/jira/jiraconfig.inc.php.template' to 'src/jira/jiraconfig.inc.php'
-1. Edit the file **'src/jira/jiraconfig.inc.php'** to include your JIRA-URL and personal JIRA-Credentials. A generic user is not foreseen (yet).
+1. Edit the file **'public/jira/bootstrap.php'** so that the path to 'include' matches your setup
+1. Copy the file 'include/jira/jiraconfig.inc.php.template' to 'include/jira/jiraconfig.inc.php'
+1. Edit the file **'include/jira/jiraconfig.inc.php'** to include your JIRA-URL and personal JIRA-Credentials. A generic user is not foreseen (yet).
 
-NOTE: The path to 'src' in the file 'bootstrap.php' above must have forward-slash even if you run this on a PC.
+NOTE: The path to 'include' in the file 'bootstrap.php' above must have forward-slash even if you run this on a PC.
 
 NOTE 2 for PC: 
 - In the same folder where 'php.exe' resides; copy the content from the provided file 'php.ini-development' into 'php.ini' and edit the created file.
@@ -202,27 +205,27 @@ Methods include:
 
 1. Initiate a connection to JIRA by instantiating the class 'jiraApi':
 ```
-	$jiraApi = new jiraApi($hostname, $jiraUser, $jiraPw, $jiraType);
+    $jiraApi = new jiraApi($hostname, $jiraUser, $jiraPw, $jiraType);
 ```
 
 2. Prepare a new issue by instantiating the class 'jiraIssue':
 ```
-	$task01 = new jiraIssue($jiraApi);
+    $task01 = new jiraIssue($jiraApi);
 ```
 
 3. Create this issue by calling the create-method
 ```
-	$task01->create( $summary, $description, $assignee,  ... );
+    $task01->create( $summary, $description, $assignee,  ... );
 ```
 
 4. Add attributes to the generated ticket with further calls:
 
 ```
-	$task01->addlabel("Dev-Team-A");
-	$task01->addFixVersion($fixVersion);
-	$task01->setReporter($defaultReporter);
-	$task01->addComponent("nginx");
-	$task01->setDueDate($startDate);
+    $task01->addlabel("Dev-Team-A");
+    $task01->addFixVersion($fixVersion);
+    $task01->setReporter($defaultReporter);
+    $task01->addComponent("nginx");
+    $task01->setDueDate($startDate);
 ```
 
 
