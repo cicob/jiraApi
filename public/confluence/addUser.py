@@ -8,9 +8,14 @@
 #   All rights management is also done
 #   User added to confluence-users
 #
+# Source:
+# https://github.com/cicob/jiraApi/tree/master/public/confluence
+#
+#
 # File History:
 # 2006-03-01 russ     - Created file
 # 2019-01-08 C Boberg - looping though a bunch of new users
+#
 
 import xmlrpclib
 
