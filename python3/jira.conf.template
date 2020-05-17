@@ -26,11 +26,12 @@ enabled = false
 
 
 ### Confluence Jira
+# Neither single- nor double-quoites are allowed around the credentials...
 [jira]
 
 url = https://jira.mycompany.com
-pid = 10201
-issuetype = 10101
+user = xxxx
+password = xxxxx
 
 
 
