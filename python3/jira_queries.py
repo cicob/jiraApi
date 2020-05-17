@@ -46,6 +46,10 @@ else:
 
 path, filename = os.path.split( fullPathAndFilename )
 
+# The following allows us to have config and classes in a separate directory
+sys.path.append(path + '/include/')
+
+
 
 
 #-----------------------------
@@ -89,14 +93,9 @@ import class_jira as cj
 aparser = ArgumentParser(description='This script sends Icinga-events to MS Teams chat.')
 
 aparser.add_argument('-x', '--example',
-                    help="Show example of typical command.",
-aparser.add_argument('-s', '--server',
-                    help="xxx")
-aparser.add_argument('-u', '--user',
-                    help="xxx")
-aparser.add_argument('-p', '--password',
-                    help="xxx")
-
+                    help="Show example of typical command."),
+aparser.add_argument('-q', '--query',
+                    help="Run a JQWL-qurey and return a JSON-string."),
 aparser.add_argument('-l', '--loglevel', choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
                      help= "Set the log-level. Default is INFO")
 aparser.add_argument('-d', '--logdir',
@@ -143,35 +142,52 @@ logging.basicConfig(
 logging.debug(' ')
 logging.debug('------ Hello! ------')
 
+jira = cj.Jira(config)
+
+
 if (args.example):
-    ### Show examples
+    # Show examples
     # Print demo-commands and quit
     print(' ')
     print('Command usage examples: ')
     print(' ')
-    print(sys.argv[0], '-u xxx -p xxx sdjkjkervr')
+    print(sys.argv[0], '-q sdjkjkervr')
     print(' ')
-    print(sys.argv[0], '-u xxx -p xxx sdjkjkervr')
+    print(sys.argv[0], '-q servrtvbrervr')
     print(' ')
     print(' ')
     exit()
+elif (args.query):
+
+    # Run a JQL Query
+    print( jira.jql(args.query) )
+    exit()
 else:
-    ### Standard
+    ### Custom code
 
 
 
+#    print( jira.getIssueTypesRaw("INFRA", False) )
+#    print( jira.getIssueTypesRaw("INFRA") )
+#    print( jira.getIssueTypes("INFRA") )
 
-    url= cfg.jiraServer + '/rest/plugins/applications/1.0/installed/jira-software'
+#    print( jira.scanProjectsRaw() )
+#    print( jira.scanProjects() )
+    from glom import glom
+
+#    print( jira.getIssuesRaw("10201", "MFT", False) )
+
+#    print( glom(   jira.getIssuesRaw("10201", "MFT", False) ,'issues.key'  ) )
+
+#    print( jira.getIssuesRaw("10201", "MFT") )
+    print( jira.getIssues("10201", "MFT") )
 
 
+#   "Name": "IT Infrastructure",
+#   "Key": "INFRA",
+#   "Id": "10201"
 
-    jira = cj.Jira(config)
-
-    print( jira.getIssueTypes("INFRA") )
-
-
-
-
+#    url= cfg.jiraServer + '/rest/plugins/applications/1.0/installed/jira-software'
 
 
 # Normal exit
