@@ -2,17 +2,19 @@
 # This Python3 file uses the following encoding: utf-8
 #
 # -----------------------------
-
-
+# Making JIRA-API calls from Python
+#
+#
+#
+# Prerequisites for using the module 'class_jira-py':
+#
+#    sudo apt-get install python3-pip
+#    sudo pip3 install glom
+#
+#
 # -----------------------------
 #
-#
-#
-
-#
 # Default logfile is '/tmp/jira_api.log'
-#
-#
 #
 # File History:
 # 2020-05-17 C Boberg - Initial stab. Heja Norge!
@@ -30,7 +32,6 @@ import configparser, os, sys, json, requests
 import urllib.parse
 
 from argparse import ArgumentParser
-#from datetime import datetime
 
 
 
@@ -93,7 +94,7 @@ import class_jira as cj
 aparser = ArgumentParser(description='This script sends Icinga-events to MS Teams chat.')
 
 aparser.add_argument('-x', '--example',
-                    help="Show example of typical command."),
+                    help="Show example of typical usage."),
 aparser.add_argument('-q', '--query',
                     help="Run a JQWL-qurey and return a JSON-string."),
 aparser.add_argument('-l', '--loglevel', choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
@@ -173,12 +174,8 @@ else:
 
 #    print( jira.scanProjectsRaw() )
 #    print( jira.scanProjects() )
-    from glom import glom
 
 #    print( jira.getIssuesRaw("10201", "MFT", False) )
-
-#    print( glom(   jira.getIssuesRaw("10201", "MFT", False) ,'issues.key'  ) )
-
 #    print( jira.getIssuesRaw("10201", "MFT") )
     print( jira.getIssues("10201", "MFT") )
 
@@ -187,10 +184,6 @@ else:
 #   "Key": "INFRA",
 #   "Id": "10201"
 
-#    url= cfg.jiraServer + '/rest/plugins/applications/1.0/installed/jira-software'
 
-
-# Normal exit
-sys.exit(os.EX_OK) # code 0, all ok
 
 

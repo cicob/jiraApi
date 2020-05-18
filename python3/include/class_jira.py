@@ -20,13 +20,14 @@ from glom import glom
 class Jira:
 
   def __init__(self, config):
-    self.config = config
-    self.projects = []
-    self.issueTypes = []
+    self.jiraUrl =  config.get('jira', 'url')
+    self.user =     config.get('jira', 'user')
+    self.password = config.get('jira', 'password')
+
 
   # JIRA API Query - considered PRIVATE
   def query(self, url):
-   myResponse = requests.get(url, auth=(self.config.jiraUser, self.config.jiraPw))
+   myResponse = requests.get(url, auth=(self.user, self.password))
    # For successful API call, response code will be 200 (OK)
    if(myResponse.ok):
      # Loading the response data into a dict variable
@@ -42,34 +43,64 @@ class Jira:
      jData = {}
    return jData
 
+
+  # When a method is called externally, always return JSON
+  # When a method is called internally, keep the Python Dict/List 
+  # for further processing, i.e. jsonResult = False
+  def formatResult(self, theContent, jsonResult=True):
+    if (jsonResult):
+        return json.dumps(theContent, indent=2, sort_keys=False)
+    else:
+        return theContent
+
+
+
   # ##  curl -s -u 'cbob:xxxxxx' --basic --insecure 'https://jira.serafe.ch/rest/api/2/project' |
   # ##        jq '.[] | {Name: .name, Key: .key}  '
-  def scanProjects(self):
-#    print('--- === scanProjects === ---')
-    url = self.config.jiraServer + "/rest/api/2/project"
+  def scanProjectsRaw(self, jsonResult=True):
+    url = self.jiraUrl + "/rest/api/2/project"
     queryResult = self.query(url)
+    return self.formatResult(queryResult, jsonResult)
+
+
+  def scanProjects(self):
+    queryResult = self.scanProjectsRaw(False)
     spec = [{'Name': 'name',
-          'Key': 'key'}]
+          'Key': 'key',
+          'Id': 'id'}]
     self.projects = glom(queryResult, spec)
+    return self.formatResult(glom(queryResult, spec))
+
 
 
   # ##  curl -s -u 'cbob:xxxxxxx' --basic --insecure 'https://jira.serafe.ch/rest/api/2/project/INFRA' | 
   # ##        jq '. | {issueTypeName: .issueTypes[].name }'
+  def getIssueTypesRaw(self, project, jsonResult=True):
+    url = self.jiraUrl + "/rest/api/2/project/" + project
+    queryResult = self.query(url)
+    return self.formatResult(queryResult, jsonResult)
+
+
   def getIssueTypes(self, project):
-    url = self.config.jiraServer + "/rest/api/2/project/" + project
+    queryResult = self.getIssueTypesRaw(project, False)
+    spec = {'IssueTypesName': ("issueTypes", ["name"])}
+    return self.formatResult(glom(queryResult, spec))
+
+
+
+  # ##  curl -s -u 'cbob:xxxxxxx' --basic --insecure 'https://jira.serafe.ch/rest/api/2/search?jql=project%3D10201%20AND%20type%3D%22MFT%22' | 
+  # ##   jq '. | {issueKey: .issues[].key }'
+  def getIssuesRaw(self, projectKey, issuetype, jsonResult=True):
+    url = self.jiraUrl + "/rest/api/2/search?jql=project=" + \
+        urllib.parse.quote (projectKey +  ' AND type=\"' + issuetype + '\"')    
     queryResult = self.query(url)
-    spec = {'IssueTypes': ('issueTypes', ['name'])}
-    self.issueTypes = glom(queryResult, spec)
-    return self.issueTypes
+    return self.formatResult(queryResult, jsonResult)
 
-  def getIssues(self, project):
-    url = self.config.jiraServer + "/rest/api/2/search?jql=project=" + project
-    queryResult = self.query(url)
-    spec = {'IssueTypes': ('issueTypes', ['name'])}
-    self.issueTypes = glom(queryResult, spec)
-
-
-#issuetype = MFT
+    
+  def getIssues(self, projectKey, issuetype):
+    queryResult = self.getIssuesRaw(projectKey, issuetype, False)
+    spec = {'IssueKey': ("issues", ["key"])}
+    return self.formatResult(glom(queryResult, spec))
 
 
 
@@ -77,7 +108,7 @@ class Jira:
 
 
   def queryAndReportToPrometheus(self, project, issuetype):
-    url = self.config.jiraServer + "/rest/api/2/search?jql=project=" + urllib.parse.quote (project['Key'] + 
+    url = self.jiraUrl + "/rest/api/2/search?jql=project=" + urllib.parse.quote (project['Key'] + 
     " AND type=\"" + issuetype + 
     "\" AND status not in (Closed, Approved, Done, Resolved)")
     queryResult = self.query(url)
