@@ -1,16 +1,14 @@
 #!/usr/bin/env python3
 # This Python3 file uses the following encoding: utf-8
-#
 # -----------------------------
+#
 # Making JIRA-API calls from Python
-#
-#
 #
 # Prerequisites for using the module 'class_jira-py':
 #
+#
 #    sudo apt-get install python3-pip
 #    sudo pip3 install glom
-#
 #
 # -----------------------------
 #
@@ -18,7 +16,7 @@
 #
 # File History:
 # 2020-05-17 C Boberg - Initial stab. Heja Norge!
-
+#
 
 
 
@@ -67,6 +65,7 @@ config.read(os.path.join(path, 'jira.conf'))
 #-----------------------------
 
 import class_jira as cj
+#import class_jira_old as cj
 
 
 
@@ -94,9 +93,11 @@ import class_jira as cj
 aparser = ArgumentParser(description='This script sends Icinga-events to MS Teams chat.')
 
 aparser.add_argument('-x', '--example',
-                    help="Show example of typical usage."),
+                    help="Show example of typical usage.", action="store_true")
 aparser.add_argument('-q', '--query',
-                    help="Run a JQWL-qurey and return a JSON-string."),
+                    help="Run a JQL-qurey and return a JSON-string."),
+aparser.add_argument('-n', '--name',
+                    help="Enter name of project and get the project-KEY. Needed in JQL-queries"),
 aparser.add_argument('-l', '--loglevel', choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
                      help= "Set the log-level. Default is INFO")
 aparser.add_argument('-d', '--logdir',
@@ -152,9 +153,9 @@ if (args.example):
     print(' ')
     print('Command usage examples: ')
     print(' ')
-    print(sys.argv[0], '-q sdjkjkervr')
+    print('  ',sys.argv[0], '-q \'project=10201 AND type="MFT"\'')
     print(' ')
-    print(sys.argv[0], '-q servrtvbrervr')
+    print('  ',sys.argv[0], '-n "INFRA"')
     print(' ')
     print(' ')
     exit()
@@ -168,19 +169,20 @@ else:
 
 
 
-#    print( jira.getIssueTypesRaw("INFRA", False) )
-#    print( jira.getIssueTypesRaw("INFRA") )
-#    print( jira.getIssueTypes("INFRA") )
+    #print( jira.getIssueTypesRaw("INFRA", False) )
+    #print( jira.getIssueTypesRaw("INFRA") )
+    #print( jira.getIssueTypes("INFRA") )
 
-#    print( jira.scanProjectsRaw() )
-#    print( jira.scanProjects() )
+    #print( jira.scanProjectsRaw() )
+    #print( jira.scanProjects() )
 
-#    print( jira.getIssuesRaw("10201", "MFT", False) )
-#    print( jira.getIssuesRaw("10201", "MFT") )
-    print( jira.getIssues("10201", "MFT") )
+    #print( jira.getIssuesRaw("10201", "MFT", False) )
+    #print( jira.getIssuesRaw("10201", "MFT") )
+    #print( jira.getIssues("10201", "MFT") )
+
+    print( jira.getProjectKey("INFRA") )
 
 
-#   "Name": "IT Infrastructure",
 #   "Key": "INFRA",
 #   "Id": "10201"
 
