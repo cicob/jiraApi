@@ -174,17 +174,13 @@ else:
     #print( jira.getIssueTypes("INFRA") )
 
     #print( jira.scanProjectsRaw() )
-    #print( jira.scanProjects() )
+    print( jira.scanProjects() )
 
     #print( jira.getIssuesRaw("10201", "MFT", False) )
     #print( jira.getIssuesRaw("10201", "MFT") )
     #print( jira.getIssues("10201", "MFT") )
 
-    print( jira.getProjectKey("INFRA") )
-
-
-#   "Key": "INFRA",
-#   "Id": "10201"
+    #print( jira.getProjectKey("INFRA") )
 
 
 
