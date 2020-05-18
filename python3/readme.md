@@ -48,7 +48,9 @@ sudo pip3 install glom
 # Usage
 * When creating JQL-queries you need the Jira project-key. This can be found by using the script with the option -n below.
 
-* With no options submitted, your custom code in the script is executed .
+* A JQL-query can be executed with -q, the result is plain JSON, as expected.
+  
+* With no options submitted, your custom code in the script is executed.
 
 * Change the file 'jira_queries.py' to your liking.
 
