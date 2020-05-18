@@ -54,8 +54,12 @@ sudo pip3 install glom
 
 ```
  ./jira_queries.py
-```
 
+ ./jira_queries.py -q 'project=10201 AND type="MFT"'
+
+ ./jira_queries.py -n "INFRA"
+
+```
 
 
 
