@@ -69,6 +69,35 @@ sudo pip3 install glom
 ```
 
 
+Comand flags:
+
+```
+
+$ ./jira_queries.py -h
+usage: jira_queries.py [-h] [-x] [-q QUERY] [-n NAME]
+                       [-l {DEBUG,INFO,WARNING,ERROR,CRITICAL}] [-d LOGDIR]
+                       [-f LOGFILE]
+
+This script sends Icinga-events to MS Teams chat. When executed without
+command-line flags it execute your custom code. When run with flags, please
+see below.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -x, --example         Show example of typical usage.
+  -q QUERY, --query QUERY
+                        Run a JQL-qurey and return a JSON-string.
+  -n NAME, --name NAME  Enter name of project and get the project-KEY. Needed
+                        in JQL-queries
+  -l {DEBUG,INFO,WARNING,ERROR,CRITICAL}, --loglevel {DEBUG,INFO,WARNING,ERROR,CRITICAL}
+                        Set the log-level. Default is INFO
+  -d LOGDIR, --logdir LOGDIR
+                        Set log directory. Default is '/tmp'
+  -f LOGFILE, --logfile LOGFILE
+                        Set log filename. Default is 'jira_api.log'
+
+```
+
 
 
 
