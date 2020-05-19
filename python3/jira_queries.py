@@ -90,7 +90,7 @@ import class_jira as cj
 #----------
 
 # Verify arguments
-aparser = ArgumentParser(description='This script generate JSON-results on your JIRA JQL-queries. When executed without command-line flags it execute your custom code. When run with flags, please see below.')
+aparser = ArgumentParser(description='This script generates JSON-results on your JIRA JQL-queries. When executed without command-line flags it execute your custom code. When run with flags, please see below.')
 
 aparser.add_argument('-x', '--example',
                     help="Show example of typical usage.", action="store_true")

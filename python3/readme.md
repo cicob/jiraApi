@@ -78,7 +78,7 @@ usage: jira_queries.py [-h] [-x] [-q QUERY] [-n NAME]
                        [-l {DEBUG,INFO,WARNING,ERROR,CRITICAL}] [-d LOGDIR]
                        [-f LOGFILE]
 
-This script generate JSON-results on your JIRA JQL-queries. When executed
+This script generates JSON-results on your JIRA JQL-queries. When executed
 without command-line flags it execute your custom code. When run with flags,
 please see below.
 
