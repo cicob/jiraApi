@@ -158,10 +158,6 @@ if (args.example):
     print('  ',sys.argv[0], '-n "INFRA"')
     print(' ')
     print('  ',sys.argv[0], '    (Executing your custom code.)')
-    
-    
-
-    
     print(' ')
     exit()
     
