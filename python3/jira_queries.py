@@ -159,14 +159,19 @@ if (args.example):
     print(' ')
     print(' ')
     exit()
-elif (args.query):
+    
+elif (args.name):
+    # Get the project key
+    print( jira.getProjectKey(args.name) )
+    exit()
 
+elif (args.query):
     # Run a JQL Query
     print( jira.jql(args.query) )
     exit()
+
 else:
     ### Custom code
-
 
 
     #print( jira.getIssueTypesRaw("INFRA", False) )
@@ -175,6 +180,7 @@ else:
 
     #print( jira.scanProjectsRaw() )
     print( jira.scanProjects() )
+
 
     #print( jira.getIssuesRaw("10201", "MFT", False) )
     #print( jira.getIssuesRaw("10201", "MFT") )
