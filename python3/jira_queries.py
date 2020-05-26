@@ -93,7 +93,7 @@ import class_jira as cj
 aparser = ArgumentParser(description='This script generates JSON-results on your JIRA JQL-queries. When executed without command-line flags it execute your custom code. When run with flags, please see below.')
 
 aparser.add_argument('-x', '--example',
-                    help="Show example of typical usage.", action="store_true")
+                    help="Show examples of typical usage.", action="store_true")
 aparser.add_argument('-q', '--query',
                     help="Run a JQL-qurey and return a JSON-string."),
 aparser.add_argument('-n', '--name',
@@ -157,6 +157,11 @@ if (args.example):
     print(' ')
     print('  ',sys.argv[0], '-n "INFRA"')
     print(' ')
+    print('  ',sys.argv[0], '    (Executing your custom code.)')
+    
+    
+
+    
     print(' ')
     exit()
     
