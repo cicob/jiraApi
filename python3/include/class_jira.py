@@ -52,7 +52,7 @@ class Jira:
     #######################################
     # When a method is called externally, always return JSON
     # When a method is called internally, keep the Python Dict/List
-    # for further processing, i.e. jsonResult = False
+    # for further processing, i.e. set jsonResult = False
     def formatResult(self, theContent, jsonResult=True):
         if (jsonResult):
             return json.dumps(theContent, indent=2, sort_keys=False)
