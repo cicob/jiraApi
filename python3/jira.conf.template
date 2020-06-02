@@ -1,8 +1,7 @@
 #
 #################################################################################
 ###
-###  Configuration file To send Icinga Events to chat
-###  Settings for Teams, Slack (soon) and Jira below
+###  Configuration file To call JIRA via the API
 ###
 #
 # This file has a structure similar to what’s found in Microsoft Windows INI files. 
