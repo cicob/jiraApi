@@ -17,6 +17,7 @@ As an Win Administrator, in Powershell:
 
 choco install git
 choco install python3 
+py -m pip install requests
 py -m pip install glom
 
 ```
@@ -26,6 +27,7 @@ py -m pip install glom
 ```
 
 sudo apt-get install python3-pip
+sudo pip3 install requests
 sudo pip3 install glom
 
 ```
