@@ -22,7 +22,7 @@
 
 
 #-----------------------------
-# Import libraries
+# Import Python libraries
 #-----------------------------
 import logging
 from logging.handlers import RotatingFileHandler
@@ -46,7 +46,7 @@ else:
 
 path, filename = os.path.split( fullPathAndFilename )
 
-# The following allows us to have config and classes in a separate directory
+# The following allows us to have config and classes in a separate directory (but we don't have to)
 sys.path.append(path + '/include/')
 
 
