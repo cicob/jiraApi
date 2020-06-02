@@ -9,7 +9,9 @@ import urllib.parse
 # https://glom.readthedocs.io/en/latest/tutorial.html
 # This requires:
 # sudo apt-get install python3-pip
+# sudo pip3 install requests
 # sudo pip3 install glom
+#
 from glom import glom
 
 #-----------------------------
